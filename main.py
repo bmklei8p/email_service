@@ -2,6 +2,7 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from smtplib import SMTP
+import os
 
 # local
 # from functools import lru_cache
@@ -16,6 +17,7 @@ from config import settings
 app = FastAPI()
 
 origins = [
+    os.environ.get("CORS_HOST", "http://localhost"),
     "http://localhost:3000",
 ]
 
