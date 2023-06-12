@@ -44,6 +44,11 @@ class Email(BaseModel):
 # local
 # def submit_form(email: Email, settings: Settings = Depends(get_settings)):
 # deployed
+@app.get("/list-routes")
+def get_all_urls():
+    url_list = [{"path": route.path, "name": route.name} for route in app.routes]
+    return url_list
+
 @app.post("/submit-form")
 def submit_form(email: Email):
     try:
