@@ -4,10 +4,10 @@ from pydantic import BaseModel
 from smtplib import SMTP
 import os
 
-# local
+# # local
 # from functools import lru_cache
 
-#prod
+# #prod
 from config import settings
 #local
 # from config import Settings
@@ -40,10 +40,11 @@ class Email(BaseModel):
 # def get_settings():
 #     return Settings()
 
-@app.post("/submit-form")
+
 # local
 # def submit_form(email: Email, settings: Settings = Depends(get_settings)):
 # deployed
+@app.post("/submit-form")
 def submit_form(email: Email):
     try:
         # Email configuration
@@ -74,6 +75,3 @@ def submit_form(email: Email):
 
     except Exception as e:
         return {"message": "Failed to send email", "error": str(e)}
-
-
-# test

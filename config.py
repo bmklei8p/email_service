@@ -8,9 +8,9 @@ class Settings(BaseSettings):
     reciever_email: str
 
     class Config:
-        # env_file = ".env"  # for local dev
+        env_file = ".env"  # for local dev
         case_sensitive = True
-        ## for local
+        # for local
         # @classmethod
         # def _env_file(cls, env_file):
         #     if os.path.isfile(env_file):
