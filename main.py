@@ -3,8 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from smtplib import SMTP
 
-from functools import lru_cache
-from config import Settings
+# local
+# from functools import lru_cache
+
+#prod
+from config import settings
+#local
+# from config import Settings
+# from typing_extensions import Annotated
+
 
 app = FastAPI()
 
@@ -26,14 +33,19 @@ class Email(BaseModel):
     subject: str
     comment: str
 
-@lru_cache()
-def get_settings():
-    return Settings()
+# local
+# @lru_cache()
+# def get_settings():
+#     return Settings()
 
 @app.post("/submit-form")
-def submit_form(email: Email, settings: Settings = Depends(get_settings)):
+# local
+# def submit_form(email: Email, settings: Settings = Depends(get_settings)):
+# deployed
+def submit_form(email: Email):
     try:
         # Email configuration
+
         smtp_server = "smtp.gmail.com"
         smtp_port = 587
         
