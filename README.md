@@ -1,8 +1,7 @@
 # Email-service: 
-```What does it do? 
-This project serves as a backend server to facilitate a front-end form to be submitted to this service and it sends an email to my e-mail with all information present in the form.
-```
 
+What does it do? 
+This project serves as a backend server to facilitate a front-end form to be submitted to this service and it sends an email to my e-mail with all information present in the form.
 
 ## What frameworks and libraries does it utilize? 
 The project was written in Python with FastAPI serving as the framework. It utilizes smtplib as a library to send the email using the smtp protocol. 
