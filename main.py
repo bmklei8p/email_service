@@ -1,8 +1,10 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from smtplib import SMTP
 
+from functools import lru_cache
+from config import Settings
 
 app = FastAPI()
 
@@ -24,17 +26,21 @@ class Email(BaseModel):
     subject: str
     comment: str
 
+@lru_cache()
+def get_settings():
+    return Settings()
 
 @app.post("/submit-form")
-def submit_form(email: Email):
+def submit_form(email: Email, settings: Settings = Depends(get_settings)):
     try:
         # Email configuration
-        sender_email = "kleinbergbryan@gmail.com"
-        receiver_email = "bmklei8p@gmail.com"
         smtp_server = "smtp.gmail.com"
         smtp_port = 587
-        smtp_username = "kleinbergbryan@gmail.com"
-        smtp_password = "onarkreneyeihqcd"
+        
+        sender_email = settings.gmail_email
+        receiver_email = settings.reciever_email
+        smtp_username = settings.gmail_email
+        smtp_password = settings.gmail_app_password
 
         # Construct the email message
         message = f"Subject: {email.subject} from {email.name}\n\nComment: {email.comment} \n this comment was sent from {email.email}"
