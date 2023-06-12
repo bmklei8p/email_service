@@ -53,6 +53,8 @@ def get_all_urls():
 def get_works():
     return {"Message": "This should work"}
 
+## why will this not load just adding the .get?
+
 @app.post("/submit-form")
 def submit_form(email: Email):
     try:
