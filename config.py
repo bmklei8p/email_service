@@ -9,7 +9,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"  # for local dev
-        case_sensitive = True
+        case_sensitive = False
         # for local
         # @classmethod
         # def _env_file(cls, env_file):
