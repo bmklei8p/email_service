@@ -13,3 +13,7 @@ The project was written in Python with FastAPI serving as the framework. It util
 2- Message format was sending through a subject line but no other information.
 2- Tried to look up documentation for the message format on the smtplib library but was unsucessful. Found solution (/n/n instead of just /n) on https://stackoverflow.com/questions/21639321/how-to-send-a-properly-formatted-email-using-python-and-smtp.
 
+3- CORS block when sent from localhost:3000 to deployed backend.
+3- Added/removed multiple configurations of localhost:3000 without success. Looked up cors documentation on fastapi and was presented with "*" wildcard option that allows all origins. 
+Attempted multiple times to avoid this option due to security, but was the only successful option.
+Will attempt again when front-end that uses this service is deployed to test front-end origin.
