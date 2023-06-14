@@ -8,7 +8,6 @@ class Settings(BaseSettings):
     reciever_email: str
 
     class Config:
-        env_file = ".env"  # for local dev
         case_sensitive = False
 
         @classmethod
