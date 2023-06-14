@@ -8,11 +8,7 @@ from config import settings
 app = FastAPI()
 
 origins = [
-    "http://localhost"
-    "http://localhost:3000", 
-    "http://localhost:3000/",
-    "http://localhost:8000",
-    "http://localhost:8000/",
+    "*",
 ]
 
 app.add_middleware(
