@@ -1,15 +1,28 @@
 from fastapi import APIRouter
-from models import Email
+from models import Email, User
 from config import settings
 from smtplib import SMTP
+from fastapi import Depends
+from queries.users import UserQueries
 
 router = APIRouter()
 
+def validate_user(API_KEY, email, repo: UserQueries = Depends()):
+    ## have to add a check for the API_KEY with mongodb to compare to the one in the database and the email of the user and ensure that they are the same
+    user = repo.get_one(email)
+    if (user.API_KEY == API_KEY):
+        return True
+    else:
+        return False
+
+
 @router.post("/submit-form")
 def submit_form(email: Email):
-    ## have to add a check for the API_KEY with mongodb to compare to the one in the database and the email of the user and ensure that they are the same
+    validatedUser = validate_user(email.API_KEY, email.recieverEmail)
 
-
+    if (validatedUser == False):
+        return {"message": "API_KEY or email is incorrect"}
+  
     try:
         # Email configuration
         smtp_server = "smtp.gmail.com"
