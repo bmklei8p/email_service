@@ -16,4 +16,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(emails.router, prefix="/api")
+app.include_router(emails.router)
