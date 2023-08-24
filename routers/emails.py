@@ -7,21 +7,31 @@ from queries.users import UserQueries
 
 router = APIRouter()
 
-def validate_user(API_KEY, email, repo: UserQueries = Depends()):
-    ## have to add a check for the API_KEY with mongodb to compare to the one in the database and the email of the user and ensure that they are the same
-    user = repo.get_one(email)
-    if (user.API_KEY == API_KEY):
-        return True
-    else:
-        return False
+# def validate_user(API_KEY, email, repo: UserQueries = Depends()):
+#     ## have to add a check for the API_KEY with mongodb to compare to the one in the database and the email of the user and ensure that they are the same
+#     user = repo.get_one(email)
+#     if (user.API_KEY == API_KEY):
+#         return True
+#     else:
+#         return False
+    
+def validate_user(email: Email, repo: UserQueries = Depends()):
+  user = repo.get_one(email.recieverEmail)
+  if user and user.API_KEY == email.API_KEY:
+      return True
+  else:
+      return False
 
 
 @router.post("/submit-form")
-def submit_form(email: Email):
-    validatedUser = validate_user(email.API_KEY, email.recieverEmail)
+# def submit_form(email: Email):
+def submit_form(email: Email, validated_user: bool = Depends(validate_user)):
+    # validatedUser = validate_user(email.API_KEY, email.recieverEmail)
+    if not validated_user:
+      return {"message": "API_KEY or email is incorrect"}
 
-    if (validatedUser == False):
-        return {"message": "API_KEY or email is incorrect"}
+    # if (validatedUser == False):
+    #     return {"message": "API_KEY or email is incorrect"}
   
     try:
         # Email configuration
