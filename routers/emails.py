@@ -4,6 +4,9 @@ from config import settings
 from smtplib import SMTP
 from fastapi import Depends
 from queries.users import UserQueries
+from fastapi import HTTPException
+from fastapi.responses import JSONResponse
+
 
 router = APIRouter()
 
@@ -14,13 +17,14 @@ router = APIRouter()
 #         return True
 #     else:
 #         return False
-    
+
+
 def validate_user(email: Email, repo: UserQueries = Depends()):
-  user = repo.get_one(email.recieverEmail)
-  if user and user.API_KEY == email.API_KEY:
-      return True
-  else:
-      return False
+    user = repo.get_one(email.recieverEmail)
+    if user and user.API_KEY == email.API_KEY:
+        return True
+    else:
+        return False
 
 
 @router.post("/submit-form")
@@ -28,16 +32,15 @@ def validate_user(email: Email, repo: UserQueries = Depends()):
 def submit_form(email: Email, validated_user: bool = Depends(validate_user)):
     # validatedUser = validate_user(email.API_KEY, email.recieverEmail)
     if not validated_user:
-      return {"message": "API_KEY or email is incorrect"}
+        return JSONResponse(
+            content={"Message": "API_KEY or email is incorrect"}, status_code=401
+        )
 
-    # if (validatedUser == False):
-    #     return {"message": "API_KEY or email is incorrect"}
-  
     try:
         # Email configuration
         smtp_server = "smtp.gmail.com"
         smtp_port = 587
-        
+
         sender_email = settings.gmail_email
         receiver_email = email.recieverEmail
         smtp_username = settings.gmail_email
@@ -52,7 +55,12 @@ def submit_form(email: Email, validated_user: bool = Depends(validate_user)):
             server.login(smtp_username, smtp_password)
             server.sendmail(sender_email, receiver_email, message)
 
-        return {"message": "Email sent successfully"}
+        return JSONResponse(
+            content={"Message": "Email sent successfully"}, status_code=201
+        )
 
     except Exception as e:
-        return {"message": "Failed to send email", "error": str(e)}
+        return JSONResponse(
+            content={"Message": "Failed to send email", "error": str(e)},
+            status_code=500,
+        )
