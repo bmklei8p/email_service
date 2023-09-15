@@ -6,6 +6,11 @@ from fastapi import Depends
 from queries.users import UserQueries
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
+from jinja2 import Environment, FileSystemLoader
+import os
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 
 
 router = APIRouter()
@@ -35,6 +40,9 @@ def submit_form(email: Email, validated_user: bool = Depends(validate_user)):
         return JSONResponse(
             content={"Message": "API_KEY or email is incorrect"}, status_code=401
         )
+    template_env = Environment(loader=FileSystemLoader(os.path.abspath(".")))
+    template = template_env.get_template("email_template.html")
+    email_content = template.render(email=email)
 
     try:
         # Email configuration
@@ -47,13 +55,20 @@ def submit_form(email: Email, validated_user: bool = Depends(validate_user)):
         smtp_password = settings.gmail_app_password
 
         # Construct the email message
-        message = f"Subject: {email.subject} from {email.senderName}\n\nComment: {email.comment} \n this comment was sent from {email.senderEmail}"
+        # message = f"Subject: {email.subject} from {email.senderName}\n\nComment: {email.comment} \n this comment was sent from {email.senderEmail}"
+
 
         # Send the email
         with SMTP(smtp_server, smtp_port) as server:
             server.starttls()
             server.login(smtp_username, smtp_password)
-            server.sendmail(sender_email, receiver_email, message)
+            msg = MIMEMultipart()
+            msg["Subject"] = email.subject
+            msg["From"] = sender_email
+            msg["To"] = receiver_email
+            msg.attach(MIMEText(email_content, "html"))
+            server.sendmail(sender_email, receiver_email, msg.as_string())
+            # server.sendmail(sender_email, receiver_email, message)
 
         return JSONResponse(
             content={"Message": "Email sent successfully"}, status_code=201
